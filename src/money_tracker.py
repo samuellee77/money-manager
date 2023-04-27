@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from datetime import datetime
+from datetime import date
 class money_tracker:
 
     total_group = 0
@@ -71,19 +71,19 @@ class money_tracker:
         people (list of str): the people who share this expense
         payer (str): the person who pay this expense
         '''
-        curr = datetime.now()
-        time_created = f"{curr.month}/{curr.date} {curr.hour}:{curr.minute}"
+        curr = date.today()
+        time_created = str(curr)
         self.expenses.loc[len(self.expenses.index)] = [expense_name, amount, people, payer, time_created]
         shared_amount = round(amount / len(people), 2)
         for person in self.members:
             if person == payer:
-                self.members_payment.at[person, 'unpaid_record'].append(('payer', -amount))
+                self.members_payment.at[person, 'unpaid_record'].append(('payer', - round(amount), 2))
             elif person in people:
                 self.members_payment.at[person, 'unpaid_record'].append((payer, shared_amount))
             else:
                 continue
         return
-
+# add negative to the payer's record
     def payment_needed(self, name):
         '''
         A method to summarize each person's debt and who he/she owes
@@ -101,13 +101,13 @@ class money_tracker:
         records = self.members_payment.loc[name].get('unpaid_record')
         for record in records:
             if record[0] != 'payer':
-                debts[person] += record[1]
+                debts[record[0]] += record[1]
         return debts
 
     def update(self):
         '''A method to update members_payment's 'amount_owed' column'''
         for person in self.members:
-            self.members_payment.loc[person]['amount_owed'] = self.payment_needed(person)
+            self.members_payment.at[person, 'amount_owed'] = self.payment_needed(person)
         return
     
     def pay(self, payer, recipient, amount):
@@ -123,6 +123,8 @@ class money_tracker:
         record = self.members_payment.loc[payer]['unpaid_record']
         amount_needed = sum([tup[1] for tup in record if tup[0] == recipient])
         if amount_needed == amount:
-            self.members_payment.loc[payer]['unpaid_record'] = []
-            self.members_payment.loc[payer]['amount_owed'][recipient] -= amount
-        return
+            self.members_payment.at[payer, 'amount_owed'][recipient] -= amount
+            self.members_payment.at[payer, 'unpaid_record'] = []
+            return True
+        else:
+            return False 

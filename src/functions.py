@@ -1,28 +1,15 @@
-from money_tracker import *
+from money_tracker import money_tracker as mt
 
-test = money_tracker(["Samuel", "Jonathan", "Janice"])
-print(test.members)
-print('\n')
-print(test.expenses)
-print('\n')
-print(test.members_payment)
-print('\n')
+today = mt(["Samuel", "Jonathan", "Janice", "Allison"])
+today.add_expense("market", 3.99 + 6.99 + 5.49, ["Samuel"], "Janice")
+today.add_expense("Jonathan_dinner", 21.99*1.143, ["Jonathan"], "Janice")
+today.add_expense("Allison_dinner", 21.99*1.143 + 20.99*1.143, ["Allison"], "Janice")
+today.add_expense("Samuel_dinner", 17.99*1.143, ["Samuel"], "Janice")
 
-test.add_expense("haha", 10, ["Samuel"], "Janice")
+today.update()
+for name in today.members_payment.index:
+    print(f"{name} have to pay: {today.members_payment.get('amount_owed').loc[name]}")
+print(mt.numbers())
 
-test.add_expense("idiot", 30, ["Jonathan", "Samuel"], "Janice")
-print(test.expenses)
-print('\n')
-print(test.members_payment)
-print('\n')
-
-print(test.payment_needed('Jonathan'))
-print(money_tracker.total_group)
-
-test.update()
-print(test.members_payment)
-
-test.pay('Samuel', 'Janice', 25)
-print(test.members_payment)
-print('\n')
-print(test.payment_needed('Samuel'))
+second = mt(["Cammeele", "Janice", "Allison"])
+print(mt.numbers())
