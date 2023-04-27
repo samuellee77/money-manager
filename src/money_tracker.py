@@ -5,6 +5,9 @@ class money_tracker:
 
     total_group = 0
     
+    def numbers():
+        return money_tracker.total_group
+    
     def __init__(self, members):
         '''
         A constructor to initialize the money tracker
@@ -36,13 +39,13 @@ class money_tracker:
         money_tracker.total_group += 1
 
         return
-
-    def clear(self):
+    def __str__(self):
+        return ",".join(self.members) + "are in the money group!"
+    
+    def __del__(self):
         '''clear the money tracker group'''
-        del self.expenses
-        del self.members_payment
         money_tracker.total_group -= 1
-        return
+        return 
 
     def price_after_tax_and_tip(self, amount, tax_rate, tip):
         '''
