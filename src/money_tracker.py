@@ -40,7 +40,7 @@ class money_tracker:
 
         return
     def __str__(self):
-        return ",".join(self.members) + "are in the money group!"
+        return ",".join(self.members) + " are in the money group!"
     
     def __del__(self):
         '''clear the money tracker group'''

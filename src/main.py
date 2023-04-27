@@ -11,7 +11,6 @@ tree = app_commands.CommandTree(client)
 
 #constant/setting
 current_group = 0
-group_count = 0
 commands_dict = {}
 ALLOWED_GUILDS = []
 for guild_id in config("DISCORD_SERVER_IDS").split(","):
@@ -24,20 +23,16 @@ async def help(interaction):
         result_string += f"/{key}: {value}\n"
     await interaction.response.send_message("Hello!")
 
-@tree.command(name = "create", description = "help functions", guilds=ALLOWED_GUILDS)
+@tree.command(name = "create", description = "create the money group with names", guilds=ALLOWED_GUILDS)
 async def create(interaction, names:str):
     names = names.strip().split(",")
-    if mt.numbers() <= 5:
-        key = str("money_group_" + str(group_count + 1))
-        money_group_1 = mt(names)
-        print(money_group_1)
-        commands_dict["Sam"] = "Hsa"
-        global group_count 
-        # exec("money_group_" + str(mt.numbers() + 1) + " = mt(names)")
-        # print(money_group_1)
-        string = f"The group with {', '.join(names)} is created!\nCurrent count of the group is {current_group}"
-    else:
-        string = "Too many groups! Please delete some other groups to continue!"
+    # if mt.numbers() <= 5:
+    money_group =  mt(names)
+    current_group = mt.numbers()
+    #
+    string = f"The group is created!\n{money_group}"
+    # else:
+    #     string = "Too many groups! Please delete some other groups to continue!"
     await interaction.response.send_message(string)
 
 @client.event
