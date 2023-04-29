@@ -1,5 +1,3 @@
-from calendar import month_name
-from threading import currentThread
 from decouple import config
 import discord
 from discord import app_commands
@@ -9,7 +7,7 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-#constant/setting
+# constant/setting
 current_group = 0
 commands_dict = {}
 ALLOWED_GUILDS = []
