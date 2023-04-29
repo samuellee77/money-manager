@@ -7,10 +7,9 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-ERROR_MESSAGE = "The money group does not exist"
-
 # constant/setting  
 commands_dict = {}
+ERROR_MESSAGE = "The money group does not exist"
 ALLOWED_GUILDS = []
 for guild_id in config("DISCORD_SERVER_IDS").split(","):
     ALLOWED_GUILDS.append(discord.Object(id=int(guild_id)))
@@ -78,7 +77,7 @@ async def pay_amount(interaction, payer: str, recipient: str, amount: int):
 
 @client.event
 async def on_ready():
-    await tree.sync()
+    await tree.sync(guild=discord.Object(id=1032389114957418496))
     print("Ready!")
 
 client.run(config("DISCORD_TOKEN"))
