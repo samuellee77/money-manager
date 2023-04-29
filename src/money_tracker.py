@@ -40,7 +40,7 @@ class money_tracker:
 
         return
     def __str__(self):
-        return ",".join(self.members) + " are in the money group!"
+        return ", ".join(self.members) + " are in the money group!"
     
     def __del__(self):
         '''clear the money tracker group'''
@@ -110,6 +110,9 @@ class money_tracker:
             self.members_payment.at[person, 'amount_owed'] = self.payment_needed(person)
         return
     
+    def get_owed(self, person):
+        return self.members_payment.get('amount_owed').loc[person]
+
     def pay(self, payer, recipient, amount):
         '''
         A method that payer pay the 'amount' to the recipient and update the

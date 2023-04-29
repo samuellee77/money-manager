@@ -7,8 +7,7 @@ today.add_expense("Allison_dinner", 21.99*1.143 + 20.99*1.143, ["Allison"], "Jan
 today.add_expense("Samuel_dinner", 17.99*1.143, ["Samuel"], "Janice")
 
 today.update()
-for name in today.members_payment.index:
-    print(f"{name} have to pay: {today.members_payment.get('amount_owed').loc[name]}")
+print(today.get_owed("Samuel"))
 print(mt.numbers())
 
 second = mt(["Cammeele", "Janice", "Allison"])
