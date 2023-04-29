@@ -1,7 +1,7 @@
 from decouple import config
 import discord
 from discord import app_commands
-from money_tracker import money_tracker as mt
+from src.money_tracker import money_tracker as mt
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
