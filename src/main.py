@@ -7,15 +7,15 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-# constant/setting  
+# constant/setting
 commands_dict = {}
 ERROR_MESSAGE = "The money group does not exist"
 ALLOWED_GUILDS = []
 for guild_id in config("DISCORD_SERVER_IDS").split(","):
     ALLOWED_GUILDS.append(discord.Object(id=int(guild_id)))
 
-@tree.command(name = "help", description = "help functions", guilds=ALLOWED_GUILDS)
-async def help(interaction):
+@tree.command(name = "help_command", description = "help functions", guilds=ALLOWED_GUILDS)
+async def help_command(interaction):
     result_string = 'Commands:\n'
     for key, value in commands_dict:
         result_string += f"/{key}: {value}\n"
@@ -24,19 +24,15 @@ async def help(interaction):
 @tree.command(name = "create", description = "create the money group with names", guilds=ALLOWED_GUILDS)
 async def create(interaction, names:str):
     names = names.replace(" ", "").split(",")
-    # if mt.numbers() <= 5:
     global money_group
-    money_group =  mt(names)
-    # current_group = mt.numbers()
+    money_group = mt(names)
     string = f"The group is created!\n{money_group}"
-    # else:
-    #     string = "Too many groups! Please delete some other groups to continue!"
     await interaction.response.send_message(string)
 
 @tree.command(name = "delete", description= "delete the money group", guilds=ALLOWED_GUILDS)
 async def delete(interaction):
     try:
-        money_group.__del__()
+        del money_group
         await interaction.response.send_message("The money group is deleted")
     except NameError:
         await interaction.response.send_message(ERROR_MESSAGE)
@@ -46,6 +42,7 @@ async def add(interaction, expense_name: str, amount: int, payer: str, names: st
     people = names.replace(" ", "").split(",")
     try:
         money_group.add_expense(expense_name, amount, people, payer)
+        money_group.update()
         await interaction.response.send_message("Success!")
     except NameError:
         await interaction.response.send_message(ERROR_MESSAGE)
@@ -56,7 +53,7 @@ async def add(interaction, expense_name: str, amount: int, payer: str, names: st
 async def person_owed(interaction, name: str):
     try:
         money_group.update()
-        await interaction.response.send_message(f"{name} have to pay: {money_group.get_owed(name.strip())}")
+        await interaction.response.send_message(f"{name} have to pay/recieve: {money_group.get_owed(name.strip())}")
     except NameError:
         await interaction.response.send_message(ERROR_MESSAGE)
     except TypeError:

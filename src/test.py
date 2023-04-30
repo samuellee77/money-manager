@@ -8,7 +8,5 @@ today.add_expense("Samuel_dinner", 17.99*1.143, ["Samuel"], "Janice")
 
 today.update()
 print(today.get_owed("Samuel"))
-print(mt.numbers())
-
-second = mt(["Cammeele", "Janice", "Allison"])
-print(mt.numbers())
+print(today.expenses)
+print(today.members_payment.get("amount_owed").loc['Samuel'])
