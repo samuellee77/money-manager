@@ -14,7 +14,7 @@ commands_dict = {
 "/create": "create the money group with the given names\nParam(s):\n\
 \'names (str)\': the names should be in the group (need to be separated by comma!)",
 
-"/delete": "delete the money group",
+"/clear": "clear and delete the money group",
 
 "/calculate": "calculate the price after tax and tip\nParams(s):\n\
 \'amount (float)\': the original price\n\
@@ -27,8 +27,13 @@ commands_dict = {
 \'names (str)\': the names who share this expense(need to be separated by comma!)\n\
 \'payer (str)\': the person who pay this expense",
 
+"/delete":"delete a expense in the record",
+
 "/person_owed": "get the total amount owed by/to the person\nParam(s):\n\
 \'name (str)\': the name of the person",
+
+"/update": "update the owed payment by each. Must, but only once, run it \
+so it will show the records correctly!",
 
 "/pay_amount": "the payer pays the recipient with the amount of money\nParam(s):\n\
 \'payer (str)\': the person who pay his/her owed amount\n\
@@ -37,7 +42,7 @@ commands_dict = {
 }
 
 NONEXIST_ERROR_MESSAGE = "The money group does not exist"
-BUG_MESSAGE = "BUGGGGGG!!!!!!!!!!!!!!!!"
+BUG_MESSAGE = "BUGGGGGG!!!!! NONONONONO! YAMEDE! SHIBA! BAGAYALO! GAN! SCHEISSE!"
 ALLOWED_GUILDS = []
 for guild_id in config("DISCORD_SERVER_IDS").split(","):
     ALLOWED_GUILDS.append(discord.Object(id=int(guild_id)))
@@ -58,8 +63,8 @@ async def create(interaction, names:str):
     string = f"The group is created!\n{money_group}"
     await interaction.response.send_message(string)
 
-@tree.command(name = "delete", description = "delete the money group", guilds=ALLOWED_GUILDS)
-async def delete(interaction):
+@tree.command(name = "clear", description = "delete the money group", guilds=ALLOWED_GUILDS)
+async def clear(interaction):
     try:
         money_group.__del__()
         await interaction.response.send_message("The money group is deleted")
@@ -89,9 +94,17 @@ async def add(interaction, expense_name: str, amount: float, names: str, payer: 
     people = names.replace(" ", "").split(",")
     try:
         money_group.add_expense(expense_name, amount, people, payer)
-        money_group.update()
         string = ", ".join(people)
         await interaction.response.send_message(f"Success!\n{expense_name}: {str(amount)}, shared by {string} and paid by {payer}, is stored!")
+    except NameError:
+        await interaction.response.send_message(NONEXIST_ERROR_MESSAGE)
+    except:
+        await interaction.response.send_message(BUG_MESSAGE)
+
+@tree.command(name = 'update', description="update the owed payment (You must, but only once, run it so the record would show correctly!)", guilds=ALLOWED_GUILDS)
+async def update(interaction):
+    try:
+        money_group.update()
     except NameError:
         await interaction.response.send_message(NONEXIST_ERROR_MESSAGE)
     except:

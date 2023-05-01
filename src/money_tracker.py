@@ -78,8 +78,7 @@ class money_tracker:
         '''
         curr = date.today()
         time_created = str(curr)
-        ppl_lst = people.split(",")
-        for ppl in ppl_lst:
+        for ppl in people:
             if not ppl in self.members:
                 raise NameError()
         self.expenses.loc[len(self.expenses.index)] = [expense_name, amount, people, payer, time_created]
