@@ -73,21 +73,27 @@ class money_tracker:
         Params:
         expense_name (str): the name of the expense
         amount (int or float): the amount of the expense
-        people (list of str): the people who share this expense
+        people (str): the people who share this expense
         payer (str): the person who pay this expense
         '''
         curr = date.today()
         time_created = str(curr)
+        ppl_lst = people.split(",")
+        for ppl in ppl_lst:
+            if not ppl in self.members:
+                raise NameError()
         self.expenses.loc[len(self.expenses.index)] = [expense_name, amount, people, payer, time_created]
         shared_amount = round(amount / len(people), 2)
         for person in self.members:
-            if person == payer:
+            if person == payer and person in people:
+                self.members_payment.at[person, 'unpaid_record']\
+                    .append(('payer', - round(shared_amount * (len(people) - 1), 2)))
+            elif person == payer:
                 self.members_payment.at[person, 'unpaid_record'].append(('payer', - round(amount, 2)))
             elif person in people:
                 self.members_payment.at[person, 'unpaid_record'].append((payer, shared_amount))
             else:
                 continue
-
 
     def update(self):
         '''A method to update members_payment's 'amount_owed' column'''
@@ -103,6 +109,9 @@ class money_tracker:
 
     def get_owed(self, person):
         return self.members_payment.get('amount_owed').loc[person]
+
+    def get_record(self):
+        return self.expenses
 
     def pay(self, payer, recipient, amount):
         '''
