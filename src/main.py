@@ -27,8 +27,6 @@ commands_dict = {
 \'names (str)\': the names who share this expense(need to be separated by comma!)\n\
 \'payer (str)\': the person who pay this expense",
 
-"/delete":"delete a expense in the record",
-
 "/person_owed": "get the total amount owed by/to the person\nParam(s):\n\
 \'name (str)\': the name of the person",
 

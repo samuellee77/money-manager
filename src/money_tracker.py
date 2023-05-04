@@ -19,7 +19,6 @@ class money_tracker:
         '''
         self.members = members
         self.expenses = pd.DataFrame()
-        self.expenses["expense_name"] = np.nan
         self.expenses["amount"] = np.nan
         self.expenses["people"] = np.nan
         self.expenses["payer"] = np.nan
@@ -81,7 +80,7 @@ class money_tracker:
         for ppl in people:
             if not ppl in self.members:
                 raise NameError()
-        self.expenses.loc[len(self.expenses.index)] = [expense_name, amount, people, payer, time_created]
+        self.expenses.loc[expense_name] = [amount, people, payer, time_created]
         shared_amount = round(amount / len(people), 2)
         for person in self.members:
             if person == payer and person in people:
