@@ -12,16 +12,44 @@ def add():
     payer = st.selectbox("Please select the payer", members)
     amount = st.number_input("Please enter the amount of this expense", min_value=0)
     flag = st.button("Add!")
-    if expense_name and participants and payer and amount and flag:
-        money_group.add_expense(expense_name, amount, participants, payer)
-        st.success("Success!")
+    # money_group.add_expense(expense_name, amount, participants, payer)
+    # st.success("Success!")
 
 # Main Streamlit app
 def main():
     st.title("Money Manager")
-    st.caption("0.0 version by Samuel Lee (2023-05-21)")
-    add()
-    st.write(money_group.get_record())
+    st.caption("0.0 version by Samuel Lee (2023-06-16)")
+    st.subheader("Add Expense!")
+    with st.form("my_form"):
+        expense_name = st.text_input("Please enter the expense Name")
+        participants = st.multiselect("Please select the members", members)
+        payer = st.selectbox("Please select the payer", members)
+        amount = st.number_input("Please enter the amount of this expense", min_value=0)
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            money_group.add_expense(expense_name, amount, participants, payer)
+            st.success("Add successfully")
+
+    tab1, tab2 = st.tabs(["📑Record", "📊OWED"])
+
+    with tab1:
+        if money_group.get_record().empty:
+            st.write("The record is empty! Plz add something!")
+        else:
+            st.dataframe(money_group.get_record())
+    with tab2:
+        if money_group.get_record().empty:
+            st.write("The record is empty! Plz add something!")
+        else:
+            person = st.selectbox("Which person you want to know?", members)
+            if money_group.get_owed(person):
+                st.caption("Negative value")
+                st.dataframe(money_group.get_owed(person))
+    
+    
+    
+    
+    
     # # Button to create a new member
     # if st.button("Add Expense"):
     #     if member_name:
