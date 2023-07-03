@@ -12,7 +12,6 @@ if 'money_group' not in st.session_state:
 # Main Streamlit app
 def main():
     st.title("Money Manager")
-    st.title("SD諧咖們")
     st.caption("1.0 version by Samuel Lee (2023-07-03)")
     st.subheader("Add Expense!")
     with st.form("my_form"):
@@ -30,6 +29,7 @@ def main():
     with tab1:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
+            placeholder = st.empty()
         else:
             st.dataframe(st.session_state.money_group.get_record())
     with tab2:
@@ -38,20 +38,11 @@ def main():
         else:
             person = st.selectbox("Which person you want to know?", members)
             if st.session_state.money_group:
-                st.caption("Negative value means")
-                st.write(st.session_state.money_group.get_owed(person))
+                st.caption("Negative value means the person owes you")
+                st.write(person + st.session_state.money_group.get_owed(person))
+    st.divider()
     st.write("Any issues? Please contact hsl023@ucsd.edu")
+    st.write("GitHub Repo: https://github.com/samuellee77/money-manager")
     
-    
-    
-    
-    # # Button to create a new member
-    # if st.button("Add Expense"):
-    #     if member_name:
-    #         create_member(member_name)
-    #         st.success(f"Member '{member_name}' created!")
-    #     else:
-    #         st.warning("Please enter a valid member name.")
-
 if __name__ == '__main__':
     main()

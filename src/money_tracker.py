@@ -26,7 +26,8 @@ class money_tracker:
         self.expense_list = []
 
         self.members_payment = pd.DataFrame(index=self.members)
-        self.members_payment['amount_owed'] = [{person:0 for person in self.members} for i in range(len(self.members))]
+        self.members_payment['amount_owed'] = \
+            [{person:0 for person in self.members} for i in range(len(self.members))]
         money_tracker.total_group += 1
 
     def __str__(self):
@@ -102,7 +103,7 @@ class money_tracker:
     #     self.members_payment.assign(amount_owed=pd.Series(amount_owed_lst))
 
     def get_owed(self, person):
-        return self.members_payment.get('amount_owed').loc[person]
+        return str(self.members_payment.get('amount_owed').loc[person])
 
     def get_record(self):
         return self.expenses

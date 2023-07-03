@@ -1,7 +1,7 @@
 1. Now it is not possible to create multiple group at the same time -> need to add this feature later
 2. need to add log for every action
 3. add delete function to delete one expense
-
+4. exception dealing
 Next step:
 change add/update functions -> Done!
 Include multiple pages
