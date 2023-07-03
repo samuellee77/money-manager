@@ -1,24 +1,19 @@
 import streamlit as st
 from money_tracker import money_tracker as mt
 import numpy as np
+import pandas as pd
 
 st.set_page_config(page_title="Samuel's APPPE!!")
 members = ["Samuel", "Janice", "Jonathan", "Allison", "Ryliee", "Jeffy"]
-money_group = mt(members)
 
-def add():
-    expense_name = st.text_input("Please enter the expense Name")
-    participants = st.multiselect("Please select the members", members)
-    payer = st.selectbox("Please select the payer", members)
-    amount = st.number_input("Please enter the amount of this expense", min_value=0)
-    flag = st.button("Add!")
-    # money_group.add_expense(expense_name, amount, participants, payer)
-    # st.success("Success!")
+if 'money_group' not in st.session_state:
+    st.session_state.money_group = mt(members)
 
 # Main Streamlit app
 def main():
     st.title("Money Manager")
-    st.caption("0.0 version by Samuel Lee (2023-06-16)")
+    st.title("SD諧咖們")
+    st.caption("1.0 version by Samuel Lee (2023-07-03)")
     st.subheader("Add Expense!")
     with st.form("my_form"):
         expense_name = st.text_input("Please enter the expense Name")
@@ -27,25 +22,25 @@ def main():
         amount = st.number_input("Please enter the amount of this expense", min_value=0)
         submitted = st.form_submit_button("Submit")
         if submitted:
-            money_group.add_expense(expense_name, amount, participants, payer)
+            st.session_state.money_group.add_expense(expense_name, amount, participants, payer)
             st.success("Add successfully")
 
     tab1, tab2 = st.tabs(["📑Record", "📊OWED"])
 
     with tab1:
-        if money_group.get_record().empty:
+        if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
         else:
-            st.dataframe(money_group.get_record())
+            st.dataframe(st.session_state.money_group.get_record())
     with tab2:
-        if money_group.get_record().empty:
+        if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
         else:
             person = st.selectbox("Which person you want to know?", members)
-            if money_group.get_owed(person):
-                st.caption("Negative value")
-                st.dataframe(money_group.get_owed(person))
-    
+            if st.session_state.money_group:
+                st.caption("Negative value means")
+                st.write(st.session_state.money_group.get_owed(person))
+    st.write("Any issues? Please contact hsl023@ucsd.edu")
     
     
     

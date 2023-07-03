@@ -1,15 +1,15 @@
 from datetime import date
 import numpy as np
 import pandas as pd
-
+from expense import expense
 
 class money_tracker:
     '''
     A class of money_tracker, which can be used to store expense records and
     calculate the money owed by each person
     '''
-    total_group = 0
-
+    total_group = 0        
+    
     def __init__(self, members):
         '''
         A constructor to initialize the money tracker
@@ -23,24 +23,10 @@ class money_tracker:
         self.expenses["people"] = np.nan
         self.expenses["payer"] = np.nan
         self.expenses["date_created"] = np.nan
-
-        self.member_index = {}
-        for i in range(len(self.members)):
-            self.member_index[self.members[i]] = i
+        self.expense_list = []
 
         self.members_payment = pd.DataFrame(index=self.members)
-        lsts = []
-        for i in range(len(self.members)):
-            lsts.append([])
-        amount_dict = {}
-        for person in self.members:
-            amount_dict[person] = 0
-        dict_lsts = []
-        for i in range(len(self.members)):
-            dict_lsts.append(amount_dict.copy())
-        self.members_payment['unpaid_record'] = lsts
-        self.members_payment['amount_owed'] = dict_lsts
-
+        self.members_payment['amount_owed'] = [{person:0 for person in self.members} for i in range(len(self.members))]
         money_tracker.total_group += 1
 
     def __str__(self):
@@ -49,7 +35,6 @@ class money_tracker:
     def __del__(self):
         '''clear the money tracker group'''
         money_tracker.total_group -= 1
-
 
     def price_after_tax_and_tip(self, amount, tax_rate, tip):
         '''
@@ -82,28 +67,39 @@ class money_tracker:
                 raise NameError()
         self.expenses.loc[expense_name] = [amount, people, payer, time_created]
         shared_amount = round(amount / len(people), 2)
-        for person in self.members:
-            if person == payer and person in people:
-                self.members_payment.at[person, 'unpaid_record']\
-                    .append(('payer', - round(shared_amount * (len(people) - 1), 2)))
-            elif person == payer:
-                self.members_payment.at[person, 'unpaid_record'].append(('payer', - round(amount, 2)))
-            elif person in people:
-                self.members_payment.at[person, 'unpaid_record'].append((payer, shared_amount))
-            else:
-                continue
+        # Place to edit the record system
+        for ppl in people:
+            if not ppl == payer:
+                self.expense_list.append(expense(shared_amount, payer, ppl))
+        for exp in self.expense_list:
+            if not exp.get_recorded():
+                self.members_payment.at[exp.get_debtor(), 'amount_owed'][exp.get_payer()] += exp.get_amount()
+                self.members_payment.at[exp.get_payer(), 'amount_owed'][exp.get_debtor()] -= exp.get_amount()
+                exp.set_recorded(True)
 
-    def update(self):
-        '''A method to update members_payment's 'amount_owed' column'''
-        amount_owed_lst = self.members_payment.get('amount_owed').tolist()
-        people = self.members.copy()
-        for person in people:
-            records = self.members_payment.loc[person].get('unpaid_record')
-            for record in records:
-                if record[0] != 'payer':
-                    amount_owed_lst[self.member_index[person]][record[0]] += record[1]
-                    amount_owed_lst[self.member_index[record[0]]][person] -= record[1]
-        self.members_payment.assign(amount_owed=pd.Series(amount_owed_lst))
+    
+        # for person in self.members:
+        #     if person == payer and person in people:
+        #         self.members_payment.at[person, 'unpaid_record']\
+        #             .append(('payer', - round(shared_amount * (len(people) - 1), 2)))
+        #     elif person == payer:
+        #         self.members_payment.at[person, 'unpaid_record'].append(('payer', - round(amount, 2)))
+        #     elif person in people:
+        #         self.members_payment.at[person, 'unpaid_record'].append((payer, shared_amount))
+        #     else:
+        #         continue
+
+    # def update(self):
+    #     '''A method to update members_payment's 'amount_owed' column'''
+    #     amount_owed_lst = self.members_payment.get('amount_owed').tolist()
+    #     people = self.members.copy()
+    #     for person in people:
+    #         records = self.members_payment.loc[person].get('unpaid_record')
+    #         for record in records:
+    #             if record[0] != 'payer':
+    #                 amount_owed_lst[self.member_index[person]][record[0]] += record[1]
+    #                 amount_owed_lst[self.member_index[record[0]]][person] -= record[1]
+    #     self.members_payment.assign(amount_owed=pd.Series(amount_owed_lst))
 
     def get_owed(self, person):
         return self.members_payment.get('amount_owed').loc[person]
@@ -121,10 +117,17 @@ class money_tracker:
         recipient: the name of the recipient (str)
         amount: the amount of money paid to the recipient (int or float)
         '''
-        record = self.members_payment.loc[payer]['unpaid_record']
-        amount_needed = sum([tup[1] for tup in record if tup[0] == recipient])
-        if amount_needed == amount:
+        amount_needed = self.members_payment.at[recipient, 'amount_owed'][payer]
+        if amount_needed == -amount:
             self.members_payment.at[payer, 'amount_owed'][recipient] -= amount
-            self.members_payment.at[payer, 'unpaid_record'] = []
+            self.members_payment.at[recipient, 'amount_owed'][payer] += amount
             return True
-        return False
+        else:
+            return False
+        # record = self.members_payment.loc[payer]['unpaid_record']
+        # amount_needed = sum([tup[1] for tup in record if tup[0] == recipient])
+        # if amount_needed == amount:
+        #     self.members_payment.at[payer, 'amount_owed'][recipient] -= amount
+        #     self.members_payment.at[payer, 'unpaid_record'] = []
+        #     return True
+        # return False
