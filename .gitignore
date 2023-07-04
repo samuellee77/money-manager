@@ -1,4 +1,5 @@
 .env
 __pycache__/
 test.py
-progress.txt
+Progress.txt
+src/Progress.txt

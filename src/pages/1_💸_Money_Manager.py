@@ -29,17 +29,18 @@ def main():
     with tab1:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
-            placeholder = st.empty()
+            placeholder1 = st.empty()
         else:
             st.dataframe(st.session_state.money_group.get_record())
     with tab2:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
+            placeholder2 = st.empty()
         else:
             person = st.selectbox("Which person you want to know?", members)
             if st.session_state.money_group:
                 st.caption("Negative value means the person owes you")
-                st.write(person + st.session_state.money_group.get_owed(person))
+                st.write(person + ": " + str(st.session_state.money_group.get_owed(person)))
     st.divider()
     st.write("Any issues? Please contact hsl023@ucsd.edu")
     st.write("GitHub Repo: https://github.com/samuellee77/money-manager")

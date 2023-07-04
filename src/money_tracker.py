@@ -103,7 +103,7 @@ class money_tracker:
     #     self.members_payment.assign(amount_owed=pd.Series(amount_owed_lst))
 
     def get_owed(self, person):
-        return str(self.members_payment.get('amount_owed').loc[person])
+        return self.members_payment.get('amount_owed').loc[person]
 
     def get_record(self):
         return self.expenses
