@@ -42,6 +42,20 @@ def main():
                 st.caption("Negative value means the person owes you")
                 st.write(person + ": " + str(st.session_state.money_group.get_owed(person)))
     st.divider()
+    st.subheader("Pay!")
+    with st.form("pay_form"):
+        payer = st.selectbox("Please select the payer", members)
+        recipient = st.selectbox("Please select the receiver of this payment", members)
+        amount = st.number_input("Please enter the amount of this payment", min_value=0)
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            with st.spinner('Processing, Please wait for a moment'):
+                flag = st.session_state.money_group.pay(payer, recipient, amount)
+            if flag:
+                st.success("Successfully paid! Your record is now refreshed!")
+            else:
+                st.error("Payment failed! Are you sure you paid the correct amount to the correct person?")
+    st.divider()
     st.write("Any issues? Please contact hsl023@ucsd.edu")
     st.write("GitHub Repo: https://github.com/samuellee77/money-manager")
     

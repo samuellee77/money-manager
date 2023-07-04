@@ -119,7 +119,7 @@ class money_tracker:
         amount: the amount of money paid to the recipient (int or float)
         '''
         amount_needed = self.members_payment.at[recipient, 'amount_owed'][payer]
-        if amount_needed == -amount:
+        if (amount_needed == -amount) and (not payer == recipient):
             self.members_payment.at[payer, 'amount_owed'][recipient] -= amount
             self.members_payment.at[recipient, 'amount_owed'][payer] += amount
             return True
