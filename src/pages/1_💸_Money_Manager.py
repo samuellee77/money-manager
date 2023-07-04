@@ -24,15 +24,42 @@ def main():
             st.session_state.money_group.add_expense(expense_name, amount, participants, payer)
             st.success("Add successfully")
 
-    tab1, tab2 = st.tabs(["📑Record", "📊OWED"])
+    tab1, tab2, tab3 = st.tabs(["🧾Tax", "📑Record", "📊OWED"])
 
     with tab1:
+        st.header("Tax Calculator Tool")
+        col1, col2 = st.columns(2)
+        with col1:
+            with st.form("after_form"):
+                st.subheader("After Tax & Tip")
+                before_amount = st.number_input("Please enter the amount of this expense before tax",
+                                                 min_value=0.0, format="%.2f")
+                tax_rate = st.number_input("Please enter tax rate in decimal (e.g. 0.0775)", 
+                                           min_value=0.0, value=0.0775, format="%.4f")
+                tip = st.number_input("Please enter the amount of tip", min_value=0.0, format="%.2f")
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    after_amount = round(before_amount * (1 + tax_rate) + tip, 3)
+                    st.success(f"The total amount after tax & tip is {after_amount}!")
+        with col2:
+            with st.form("before_form"):
+                st.subheader("Before Tax & Tip")
+                after_amount = st.number_input("Please enter the amount of this expense after tax & tip", 
+                                               min_value=0.0, format="%.2f")
+                tax_rate = st.number_input("Please enter tax rate in decimal (e.g. 0.0775)",
+                                           min_value=0.0, value=0.0775, format="%.4f")
+                tip = st.number_input("Please enter the amount of tip", min_value=0.0, format="%.2f")
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    before_amount = round((after_amount - tip) / (1 + tax_rate), 3)
+                    st.success(f"The original amount before tax & tip is {before_amount}!")
+    with tab2:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
             placeholder1 = st.empty()
         else:
             st.dataframe(st.session_state.money_group.get_record())
-    with tab2:
+    with tab3:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
             placeholder2 = st.empty()
