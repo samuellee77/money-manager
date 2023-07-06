@@ -1,10 +1,9 @@
 class expense:
-    def __init__(self, amount: float, payer: str, debtor: str, recorded=False, paid=False):
+    def __init__(self, amount: float, payer: str, debtor: str, recorded=False):
         self.amount = amount
         self.payer = payer
         self.debtor = debtor
         self.recorded = recorded
-        self.paid = paid
 
     def get_payer(self):
         return self.payer
@@ -20,9 +19,3 @@ class expense:
     
     def set_recorded(self, flag: bool):
         self.recorded = flag
-    
-    def get_paid(self):
-        return self.paid
-    
-    def set_paid(self, flag: bool):
-        self.paid = flag

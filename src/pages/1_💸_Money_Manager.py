@@ -11,23 +11,38 @@ if 'money_group' not in st.session_state:
 
 # Main Streamlit app
 def main():
-    st.title("Money Manager")
+    st.title("💸 Money Manager")
     st.caption("1.0 version by Samuel Lee (2023-07-03)")
-    st.subheader("Add Expense!")
-    with st.form("my_form"):
-        expense_name = st.text_input("Please enter the expense Name")
-        participants = st.multiselect("Please select the members", members)
-        payer = st.selectbox("Please select the payer", members)
-        amount = st.number_input("Please enter the amount of this expense", min_value=0)
-        submitted = st.form_submit_button("Submit")
-        if submitted:
-            st.session_state.money_group.add_expense(expense_name, amount, participants, payer)
-            st.success("Add successfully")
-
-    tab1, tab2, tab3 = st.tabs(["🧾Tax", "📑Record", "📊OWED"])
+    tab_add, tab_del = st.tabs(["ADD", "DELETE"])
+    with tab_add:
+        st.subheader("Add Expense!")
+        with st.form("my_form"):
+            expense_name = st.text_input("Please enter the expense Name")
+            participants = st.multiselect("Please select the members", members)
+            payer = st.selectbox("Please select the payer", members)
+            amount = st.number_input("Please enter the amount of this expense", min_value=0)
+            submitted = st.form_submit_button("Submit")
+            if submitted:
+                st.session_state.money_group.add_expense(expense_name, amount, participants, payer)
+                st.success("Add successfully")
+    with tab_del:
+        st.subheader("Delete Expense!")
+        expense_name = st.text_input("Please enter the name of the expense you want to delete")
+        submitted = st.button("Delete")
+        if expense_name:
+            st.warning("Are you sure to delete this expense?")
+            submitted = st.button("Pretty Sure!")
+            if submitted:
+                flag = st.session_state.money_group.del_expense(expense_name)
+                if flag:
+                    st.success("Delete successfully")
+                else:
+                    st.error("Failed to delete! Are you sure this is the correct expense name?")
+    
+    tab1, tab2, tab3 = st.tabs(["🧾TAX", "📑Record", "📊OWED"])
 
     with tab1:
-        st.header("Tax Calculator Tool")
+        st.subheader("Tax Calculator Tool")
         col1, col2 = st.columns(2)
         with col1:
             with st.form("after_form"):
@@ -55,14 +70,12 @@ def main():
                     st.success(f"The original amount before tax & tip is {before_amount}!")
     with tab2:
         if st.session_state.money_group.get_record().empty:
-            st.write("The record is empty! Plz add something!")
-            placeholder1 = st.empty()
+            st.write("The record is empty! Plz add something!") 
         else:
             st.dataframe(st.session_state.money_group.get_record())
     with tab3:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
-            placeholder2 = st.empty()
         else:
             person = st.selectbox("Which person you want to know?", members)
             if st.session_state.money_group:

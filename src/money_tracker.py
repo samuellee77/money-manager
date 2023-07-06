@@ -78,29 +78,20 @@ class money_tracker:
                 self.members_payment.at[exp.get_payer(), 'amount_owed'][exp.get_debtor()] -= exp.get_amount()
                 exp.set_recorded(True)
 
-    
-        # for person in self.members:
-        #     if person == payer and person in people:
-        #         self.members_payment.at[person, 'unpaid_record']\
-        #             .append(('payer', - round(shared_amount * (len(people) - 1), 2)))
-        #     elif person == payer:
-        #         self.members_payment.at[person, 'unpaid_record'].append(('payer', - round(amount, 2)))
-        #     elif person in people:
-        #         self.members_payment.at[person, 'unpaid_record'].append((payer, shared_amount))
-        #     else:
-        #         continue
-
-    # def update(self):
-    #     '''A method to update members_payment's 'amount_owed' column'''
-    #     amount_owed_lst = self.members_payment.get('amount_owed').tolist()
-    #     people = self.members.copy()
-    #     for person in people:
-    #         records = self.members_payment.loc[person].get('unpaid_record')
-    #         for record in records:
-    #             if record[0] != 'payer':
-    #                 amount_owed_lst[self.member_index[person]][record[0]] += record[1]
-    #                 amount_owed_lst[self.member_index[record[0]]][person] -= record[1]
-    #     self.members_payment.assign(amount_owed=pd.Series(amount_owed_lst))
+    def del_expense(self, expense_name):
+        if not expense_name in self.expenses.index:
+            return False
+        people = self.expenses.loc[expense_name].get('people')
+        payer = self.expenses.loc[expense_name].get('payer')
+        amount = self.expenses.loc[expense_name].get('amount')
+        shared_amount = round(amount / len(people), 2)
+        for exp in self.expense_list:
+            if exp.get_amount() == shared_amount and exp.get_payer() == payer and exp.get_debtor() in people:
+                if exp.get_recorded():
+                    self.members_payment.at[exp.get_debtor(), 'amount_owed'][exp.get_payer()] -= exp.get_amount()
+                    self.members_payment.at[exp.get_payer(), 'amount_owed'][exp.get_debtor()] += exp.get_amount()
+        self.expenses.drop(expense_name, inplace=True)
+        return True
 
     def get_owed(self, person):
         return self.members_payment.get('amount_owed').loc[person]
