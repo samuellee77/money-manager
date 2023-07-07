@@ -1,7 +1,6 @@
 import json
 import streamlit as st
 import random
-import os 
 
 def main():
     st.title("爛笑話")
