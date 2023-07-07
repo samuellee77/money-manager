@@ -5,7 +5,7 @@ import random
 def main():
     st.title("爛笑話")
     if st.button("生成"):
-        with open("../joke.json", encoding='utf-8') as f:
+        with open("joke.json", encoding='utf-8') as f:
             data = json.load(f)
             title, content = random.choice(list(data.items()))
             st.subheader(title)
