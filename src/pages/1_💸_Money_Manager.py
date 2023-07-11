@@ -73,8 +73,6 @@ def main():
             st.write("The record is empty! Plz add something!") 
         else:
             st.dataframe(st.session_state.money_group.get_record())
-            st.download_button(label="Download", data=st.session_state.money_group.get_record().to_excel(),
-                               file_name="expense_record.xlsv")
     with tab3:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
