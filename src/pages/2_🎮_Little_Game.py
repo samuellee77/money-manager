@@ -1,4 +1,8 @@
 import streamlit as st
 
-st.title("Beta")
-st.write("Still in development")
+def main():
+    st.title("Beta")
+    st.write("Still in development")
+
+if __name__ == '__main__':
+    main()
