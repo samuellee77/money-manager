@@ -4,6 +4,7 @@ import random
 
 def main():
     st.title("爛笑話")
+    st.write("今天，我想來點爛笑話...")
     if st.button("生成"):
         with open("src/data/joke.json", encoding='utf-8') as f:
             data = json.load(f)
