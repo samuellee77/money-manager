@@ -15,7 +15,7 @@ def main():
     st.write(f"Current Options: [ {' | '.join(st.session_state.opts)} ]")
 
     if st.button("choose!"):
-        st.write(random.choice(st.session_state.opts))
+        st.success(random.choice(st.session_state.opts))
 
     if st.button("clear"):
         del st.session_state.opts
