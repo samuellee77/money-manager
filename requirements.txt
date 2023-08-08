@@ -3,3 +3,4 @@ python-dotenv==0.21.*
 numpy==1.23.*
 pandas==2.0.*
 openai==0.27.*
+XlsxWriter==3.1.*

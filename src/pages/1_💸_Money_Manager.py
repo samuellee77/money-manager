@@ -2,12 +2,26 @@ import streamlit as st
 from money_tracker import money_tracker as mt
 import numpy as np
 import pandas as pd
+import xlsxwriter
+import io
 
 st.set_page_config(page_title="Samuel's APPPE!!")
 members = ["Samuel", "Janice", "Jonathan", "Allison", "Ryliee", "Jeffy"]
 
 if 'money_group' not in st.session_state:
     st.session_state.money_group = mt(members)
+
+def to_excel(df):
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, index=False, sheet_name='Sheet1')
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format1 = workbook.add_format({'num_format': '0.00'}) 
+    worksheet.set_column('A:A', None, format1)  
+    writer.close()
+    processed_data = output.getvalue()
+    return processed_data
 
 # Main Streamlit app
 def main():
@@ -73,6 +87,10 @@ def main():
             st.write("The record is empty! Plz add something!") 
         else:
             st.dataframe(st.session_state.money_group.get_record())
+            df_xlsx = to_excel(st.session_state.money_group.get_record())
+            st.download_button(label='📥 Download Records',
+                                data=df_xlsx,
+                                file_name='records.xlsx')
     with tab3:
         if st.session_state.money_group.get_record().empty:
             st.write("The record is empty! Plz add something!")
