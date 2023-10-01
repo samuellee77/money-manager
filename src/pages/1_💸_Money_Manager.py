@@ -34,7 +34,7 @@ def main():
             expense_name = st.text_input("Please enter the expense Name")
             participants = st.multiselect("Please select the members", members)
             payer = st.selectbox("Please select the payer", members)
-            amount = st.number_input("Please enter the amount of this expense", min_value=0)
+            amount = st.number_input("Please enter the amount of this expense", min_value=0.0)
             submitted = st.form_submit_button("Submit")
             if submitted:
                 st.session_state.money_group.add_expense(expense_name, amount, participants, payer)

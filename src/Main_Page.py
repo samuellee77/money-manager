@@ -13,4 +13,4 @@ In the Money Manager page (at left side bar), you can manager a group's expenses
 
 '''
 st.markdown(md)
-st.caption("我懶得打字了 反正點左邊 順便有空幫我想點幹話填進去")
+
