@@ -2,7 +2,6 @@ import streamlit as st
 from money_tracker import money_tracker as mt
 import numpy as np
 import pandas as pd
-import xlsxwriter
 import io
 
 st.set_page_config(page_title="Samuel's APPPE!!")
@@ -14,7 +13,7 @@ if 'money_group' not in st.session_state:
 def to_excel(df):
     output = io.BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
-    df.to_excel(writer, index=False, sheet_name='Sheet1')
+    df.to_excel(writer, index=True, sheet_name='Sheet1')
     workbook = writer.book
     worksheet = writer.sheets['Sheet1']
     format1 = workbook.add_format({'num_format': '0.00'}) 
