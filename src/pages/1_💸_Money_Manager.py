@@ -98,10 +98,7 @@ def main():
             person = st.selectbox("Which person you want to know?", members)
             if st.session_state.money_group:
                 st.caption("Negative value means the person owes you")
-                output_string = person + ": "
-                for key, value in st.session_state.money_group.get_owed(person):
-                    output_string += f" {key}: {round(value)}"
-                st.write(output_string)
+                st.write(person + ": " + str(st.session_state.money_group.get_owed(person)))
     st.divider()
     st.subheader("Pay!")
     with st.form("pay_form"):
