@@ -86,6 +86,7 @@ def main():
             st.write("The record is empty! Plz add something!") 
         else:
             st.dataframe(st.session_state.money_group.get_record())
+            st.write(f"Total amount: {st.session_state.money_group.get_record().get('amount').sum()}")
             df_xlsx = to_excel(st.session_state.money_group.get_record())
             st.download_button(label='📥 Download Records',
                                 data=df_xlsx,
@@ -97,7 +98,10 @@ def main():
             person = st.selectbox("Which person you want to know?", members)
             if st.session_state.money_group:
                 st.caption("Negative value means the person owes you")
-                st.write(person + ": " + str(st.session_state.money_group.get_owed(person)))
+                output_string = person + ": "
+                for key, value in st.session_state.money_group.get_owed(person):
+                    output_string += f" {key}: {round(value)}"
+                st.write(output_string)
     st.divider()
     st.subheader("Pay!")
     with st.form("pay_form"):

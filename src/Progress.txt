@@ -1,7 +1,6 @@
 1. Now it is not possible to create multiple group at the same time -> need to add this feature later
 2. need to add log for every action
-3. add delete function to delete one expense -> Done!
-4. exception dealing
-5. add download that allows downloading records and owed payment
-6. add upload, so it can upload past records
+3. add upload, so it can upload past records
 Next step:
+
+Cool Idea: let user take a photo of their reciept and automatically type into a dataframe, then user can select who share the items. Auto calculate owed payment
